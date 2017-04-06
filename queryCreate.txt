@@ -1,0 +1,33 @@
+create table Account(
+username varchar(20) primary key,
+password varchar(20),
+email varchar(30) unique,
+permessi char(1),
+check(permessi="A" OR permessi="G"),
+nome varchar(20) not null,
+cognome varchar(20) not null,
+classe varchar(20) not null
+);
+
+create table ISBN(
+ISBN char(13) primary key,
+nome varchar(30) not null,
+copietot int default 0,
+copiedisp int default 0
+);
+
+create table libro(
+IdLib int auto_increment primary key,
+ISBN char(13),
+foreign key (ISBN) references ISBN(ISBN)
+);
+
+create table prestito(
+IdLib int,
+username varchar(20),
+datainit date default "0000-00-00",
+datafine date default "0000-00-00",
+primary key(IdLib, username),
+foreign key (IdLib) references libro(IdLib),
+foreign key (username) references Account(username)
+);
