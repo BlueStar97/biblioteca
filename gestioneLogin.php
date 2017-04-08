@@ -8,6 +8,7 @@
     
     if(!($conn->connect_error))
     {
+        session_start();
         $userLog=$_POST["user"];
         $pwLog=$_POST["pw"];
         
@@ -21,16 +22,22 @@
         {
             if(((strcmp($row["username"], $userLog)==0)&&(strcmp($row["password"], $pwLog)==0))OR((strcmp($row["email"], $userLog)==0)&&(strcmp($row["password"], $pwLog)==0)))
             {
-                session_start();
                 $_SESSION["user"]=$row["username"];
                 $_SESSION["permit"]=$row["permessi"];
                 
                 if(strcmp($_SERVER["permit"], 'A')==0)
                     header("location: alunno.php");
                 else
-                    header("location: gestore.php");
+                    if(strcmp($_SERVER["permit"], 'G')==0)
+                        header("location: gestore.php");
                 die();
             }
         }
+        
+        session_destroy();
+        session_start();
+        $_SESSION["situation"]="user_pass_err";
+        header("location:index.html");
+        die();
     }
 ?>

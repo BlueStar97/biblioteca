@@ -6,11 +6,29 @@
         </title>
     </head>    
     <body>
+        <?php
+            session_start();
+            if($_SESSION["situation"]=="user_pass_err")
+                echo "Username o Password errati.<br/>";
+        ?>
+        
         Effettua il Login!
         <form method="POST" action="gestioneLogin.php">
-            Username <input type="text" name="user">
-            Password <input type="text" name="pw">
+            Username <input type="text" name="user"><br/>
+            Password <input type="text" name="pw"><br/>
             <input type="submit" value="Log In">
-        </form>
+        </form><br/>
+        
+        Oppure Registrati!
+        <form method="POST" action="registration.php">
+            Username <input type="text" name="user"><br/>
+            Password <input type="text" name="pw"><br/>
+            Reinserisci la Password <input type="text" name="pw2"><br/>
+            Email <input type="text" name="mail"><br/>
+            Nome <input type="text" name="name"><br/>
+            Cognome <input type="text" name="Surname"><br/>
+            Classe <input type="text" name="class"><br/>
+            <input type="submit" value="Log In">
+        </form><br/>
     </body>
 </html>
