@@ -31,3 +31,13 @@ primary key(IdLib, username),
 foreign key (IdLib) references libro(IdLib),
 foreign key (username) references Account(username)
 );
+
+create table messages(
+IdMsg int auto_increment primary key,
+username varchar(20),
+message varchar(300),
+to varchar(20),
+sawn char(1),
+check(sawn="Y" OR sawn="N"),
+foreign key (username) references Account(username)
+);

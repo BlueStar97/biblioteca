@@ -10,6 +10,15 @@
             session_start();
             if($_SESSION["situation"]=="user_pass_err")
                 echo "Username o Password errati.<br/>";
+                
+            if($_SESSION["situation"]=="err_pass_eq")
+                echo "Password non corrispondente<br/>";
+                
+            if($_SESSION["situation"]=="err_user_tkn")
+                echo "Username già presente<br/>";
+            
+            if($_SESSION["situation"]=="err_mail_tkn")
+                echo "Email già presente<br/>";
         ?>
         
         Effettua il Login!
@@ -26,7 +35,7 @@
             Reinserisci la Password <input type="text" name="pw2"><br/>
             Email <input type="text" name="mail"><br/>
             Nome <input type="text" name="name"><br/>
-            Cognome <input type="text" name="Surname"><br/>
+            Cognome <input type="text" name="surname"><br/>
             Classe <input type="text" name="class"><br/>
             <input type="submit" value="Log In">
         </form><br/>

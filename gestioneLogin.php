@@ -25,10 +25,10 @@
                 $_SESSION["user"]=$row["username"];
                 $_SESSION["permit"]=$row["permessi"];
                 
-                if(strcmp($_SERVER["permit"], 'A')==0)
+                if(strcmp($_SESSION["permit"], 'A')==0)
                     header("location: alunno.php");
                 else
-                    if(strcmp($_SERVER["permit"], 'G')==0)
+                    if(strcmp($_SESSION["permit"], 'G')==0)
                         header("location: gestore.php");
                 die();
             }
