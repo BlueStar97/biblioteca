@@ -19,22 +19,26 @@
     {
        if($_POST["pw"]==$_POST["pw2"])
        {
-           $query="INSERT INTO Account (username, password, email, permessi, nome, cognome, classe)
+            $query="INSERT INTO Account (username, password, email, permessi, nome, cognome, classe)
                     VALUES ('" . $_POST["user"] . "', '" . $_POST["pw"] . "', '" . $_POST["mail"] . "', 'A', '" . $_POST["name"] . "', '" . $_POST["surname"] . "', '" . $_POST["class"] . "')";
        
-           $conn->query($query);
+            $conn->query($query);
            
-           $_SESSION["user"]=$_POST["user"];
-           $_SESSION["permit"]="A";
-       }
-       else
-       {
-           session_destroy();
-           session_start();
-           $_SESSION["situation"]="err_pass_eq";
-           header("location:index.html");
-           die();
-       }
+            $_SESSION["user"]=$_POST["user"];
+            $_SESSION["permit"]="A";
+            $conn->close();
+            header("location:alunno.php");
+            die();
+        }
+        else
+        {
+            session_destroy();
+            session_start();
+            $_SESSION["situation"]="err_pass_eq";
+            $conn->close();
+            header("location:index.html");
+            die();
+        }
     }
     else
     {
@@ -45,6 +49,7 @@
            session_destroy();
            session_start();
            $_SESSION["situation"]="err_user_tkn";
+           $conn->close();
            header("location:index.html");
            die();
         }
@@ -54,6 +59,7 @@
            session_destroy();
            session_start();
            $_SESSION["situation"]="err_mail_tkn";
+           $conn->close();
            header("location:index.html");
            die();
         }
