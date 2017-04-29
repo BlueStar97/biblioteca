@@ -50,10 +50,17 @@
             <table><tr><th>Nome</th><th>ISBN</th><th>Copie Disponibili</th></tr>
             <tr><td>" . $row["nome"] . "</td><td>" . $row["ISBN"] . "</td><td>" . $row["copiedisp"] . "</td></tr>
             </table><br/><br/>
-            Effettua la Prenotazione!<br/>
-            <form method='POST' action='alunno.php'
+            Richiedi un prestito!<br/>
+            <form method='POST' action='alunno.php'>
                 <input type='date' nome='datainit'>
                 <input type='date' nome='datafin'>
+                <input type='hidden' name='nome' value='" . $row["nome"] . "'>
+                <input type='submit' name='case' value='Richiedi il prestito!'>
+            </form><br/>
+            Oppure effettua una prenotazione!
+            <form method='POST' action='alunno.php'>
+                <input type='date' nome='datafin'>
+                <input type='hidden' name='copie' value='" . $row["copiedisp"] . "'>
                 <input type='hidden' name='nome' value='" . $row["nome"] . "'>
                 <input type='submit' name='case' value='Prenota!'>
             </form>
@@ -68,7 +75,7 @@
         echo "<br/><br/><br/>";  
     }
     
-    if($_POST["case"]=="Prenota!")
+    if($_POST["case"]=="Richiedi il prestito!")
     {
         $name=$_POST["nome"];
         $datafin=$_POST["Datafin"];
@@ -100,37 +107,119 @@
         }
         
         if(($days>0)&&($days<30))
-        {
-            $query = "SELECT l.IdLib, l.ISBN 
-                    FROM ISBN i INNER JOIN libro l ON i.ISBN=l.ISBN 
-                    WHERE i.nome='" . $name . "' AND l.IdLib NOT IN (
-                                                                SELECT IdLib FROM prestito
-                                                        );";
-        
-            $res=$conn->query($query);
-            
-            if($row=$res->query($query))
             {
-                $query="INSERT INTO prestito(IdLib, username, datainit, datafine) 
-                        VALUES ('" . $row["IdLib"] . "', '" . $_SESSION["user"] . "', '" . $datainit . "', '" . $datafin . "')";
-                $conn->query($query);
+                $query = "SELECT l.IdLib, l.ISBN, p.datainit, p.datafin 
+                        FROM (ISBN i INNER JOIN libro l ON i.ISBN=l.ISBN) INNER JOIN prestito p ON l.IdLib=p.IdLib 
+                        WHERE i.nome='" . $name . "';";
+            
+                $res=$conn->query($query);
                 
-                $query="UPDATE ISBN SET copiedisp=copiedisp-1 WHERE ISBN='" . $row["ISBN"] . "';";
-
-                $conn->query($query);
+                $found=false;
                 
-                echo "Libro prenotato!";
+                while(($row=$res->fetch_assoc()) && ($found=false))
+                {
+                    if(((strcmp($row["datainit"],$datainit)>1)&&(strcmp($datafin,$row["datainit"])>1))||((strcmp($row["datafin"],$datainit)>1)&&(strcmp($datafin,$row["datafin"])>1))||((strcmp($datainit,$row["datainit"])>1)&&(strcmp($row["datafin"],$datainit)>1)))
+                    {
+                        $found=true;
+                    }
+                }
+                
+                if($found==false)
+                {
+                    $query="INSERT INTO prestito(IdLib, username, datainit, datafine) 
+                            VALUES ('" . $row["IdLib"] . "', '" . $_SESSION["user"] . "', '" . $datainit . "', '" . $datafin . "')";
+                    $conn->query($query);
+                    
+                    $query="UPDATE ISBN SET copiedisp=copiedisp-1 WHERE ISBN='" . $row["ISBN"] . "';";
+                    $conn->query($query);
+                        
+                    echo "Libro prenotato!";
+                }
+                else
+                {
+                    echo "Errore nella prenotazione";
+                }
             }
             else
             {
-                echo "Errore nella prenotazione";
+                echo "Non puoi richiedere un prestito per più di 30 gg!";
             }
-        }
-        else
+            echo "<br/><br/><br/>";
+    }
+    
+    if($_POST["case"]=="Richiedi il prestito!")
+    {
+        if($_POST["copie"]>0)
         {
-            echo "Non puoi richiedere un prestito per più di 30 gg!";
+            $name=$_POST["nome"];
+            $datafin=$_POST["Datafin"];
+            $datainit=date("Y/m/d");
+            
+            $yearfin=intval($datafin[0]+$datafin[1]+$datafin[2]+$datafin[3]);
+            $monthfin=intval($datafin[5]+$datafin[6]);
+            $dayfin=intval($datafin[8]+$datafin[9]);
+            
+            $yearinit=intval($datainit[0]+$datainit[1]+$datainit[2]+$datainit[3]);
+            $monthinit=intval($datainit[5]+$datainit[6]);
+            $dayinit=intval($datainit[8]+$datainit[9]);
+            
+            if(($yearfin-$yearinit)==0)
+            {
+                $days=($monthfin-$monthinit)*30+($dayfin-$dayinit);
+            }
+            
+            else
+            {
+                if(($yearfin-$yearinit)==1)
+                {
+                    $days=($monthfin-$monthinit)*30+($dayfin-$dayinit)+365;
+                }
+                else
+                {
+                    $days=-1;
+                }
+            }
+            
+            if(($days>0)&&($days<30))
+            {
+                $query = "SELECT l.IdLib, l.ISBN, p.datainit, p.datafin 
+                        FROM (ISBN i INNER JOIN libro l ON i.ISBN=l.ISBN) INNER JOIN prestito p ON l.IdLib=p.IdLib 
+                        WHERE i.nome='" . $name . "';";
+            
+                $res=$conn->query($query);
+                
+                $found=false;
+                
+                while(($row=$res->fetch_assoc()) && ($found=false))
+                {
+                    if(((strcmp($row["datainit"],$datainit)>1)&&(strcmp($datafin,$row["datainit"])>1))||((strcmp($row["datafin"],$datainit)>1)&&(strcmp($datafin,$row["datafin"])>1))||((strcmp($datainit,$row["datainit"])>1)&&(strcmp($row["datafin"],$datainit)>1)))
+                    {
+                        $found=true;
+                    }
+                }
+                
+                if($found==false)
+                {
+                    $query="INSERT INTO prestito(IdLib, username, datainit, datafine) 
+                            VALUES ('" . $row["IdLib"] . "', '" . $_SESSION["user"] . "', '" . $datainit . "', '" . $datafin . "')";
+                    $conn->query($query);
+                    
+                    $query="UPDATE ISBN SET copiedisp=copiedisp-1 WHERE ISBN='" . $row["ISBN"] . "';";
+                    $conn->query($query);
+                        
+                    echo "Libro prenotato!";
+                }
+                else
+                {
+                    echo "Errore nella prenotazione";
+                }
+            }
+            else
+            {
+                echo "Non puoi richiedere un prestito per più di 30 gg!";
+            }
+            echo "<br/><br/><br/>";
         }
-        echo "<br/><br/><br/>";
     }
     
     if($_POST["case"]=="Invia")

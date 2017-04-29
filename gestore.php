@@ -36,6 +36,27 @@
     
     $res=$conn->query($query);
     
+    echo "<div class='row'>
+            <div class='col-sm-2'>
+                Username
+            </div>
+            <div class='col-sm-2'>
+                Email
+            </div>
+            <div class='col-sm-2'>
+                Nome
+            </div>
+            <div class='col-sm-2'>
+                Cognome
+            </div>
+            <div class='col-sm-2'>
+                Classe
+            </div>
+            <div class='col-sm-2'>
+                Elimina Account
+            </div>
+        </div>";
+    
     while($row=$res->fetch_assoc())
     {
         echo "<form action='delete.php' method='POST'>
@@ -61,5 +82,6 @@
                         </div>
                     </div>
                 </form>";
+        
     }
 ?>
