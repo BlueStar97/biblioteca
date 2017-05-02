@@ -1,6 +1,7 @@
 <?php
     session_start();
     
+    //Checking session
     if($_SESSION["permit"]!='G')
     {
         session_destroy();
@@ -36,6 +37,7 @@
     
     $res=$conn->query($query);
     
+    //listing Users
     echo "<div class='row'>
             <div class='col-sm-2'>
                 Username
@@ -82,6 +84,44 @@
                         </div>
                     </div>
                 </form>";
-        
+        -
     }
+    
+    echo "<div class='row'><div class='col-sm-3'>";
+    
+    //Insert book
+    echo "Inserisci un libro<br/>
+            <form action='gestore.php' method='POST'>
+                ISBN<input type='text' name='isbn'><br/>
+                Nome<input type='text' name='name'><br/>
+                Copie Totali<input type='number' name='copietot'><br/>
+                <input type='submit' name='insert'><br/>
+            </form>";
+    
+    echo "</div><div class='col-sm-3'>";
+    
+    //Ereasing books
+    echo "<form action='gestore.php' method='POST'>
+            Cancella un libro per ISBN<input type='text' name='isbn'><input type='submit' name='ereaseisbn'><br/>
+            </form>";
+            
+    echo "</div><div class='col-sm-3'>";
+    
+    //Adding books
+    echo "<form action='gestore.php' method='POST'>
+            ISBN<input type='text' name='isbn'>
+            Numero di libri<input type='number' name='number'>
+            <input type='submit' name='add'>
+            </form>";
+            
+    echo "</div><div class='col-sm-3'>";
+    
+    //Removing books
+    echo "<form action='gestore.php' method='POST'>
+            ISBN<input type='text' name='isbn'>
+            Numero di libri<input type='number' name='number'>
+            <input type='submit' name='erease'>
+            </form>";
+    
+    echo "</div>";
 ?>
