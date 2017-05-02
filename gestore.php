@@ -13,8 +13,13 @@
             <head>
                 <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js'>
                     $(document).ready(function(){
-                        $('#mostra').click(function(){
-                            $('#showed').show();
+                        $('#mostraus').click(function(){
+                            $('#showus').show();
+                        })
+                    })
+                    $(document).ready(function(){
+                        $('#mostrapres').click(function(){
+                            $('#showpres').show();
                         })
                     })
                 </script>
@@ -38,7 +43,7 @@
     $res=$conn->query($query);
     
     //listing Users
-    echo "<div class='row'>
+    echo "<div class='container' id='showus' style='display: none;'><div class='row'>
             <div class='col-sm-2'>
                 Username
             </div>
@@ -61,7 +66,7 @@
     
     while($row=$res->fetch_assoc())
     {
-        echo "<form action='delete.php' method='POST'>
+        echo "<form action='gestore.php' method='POST'>
                     <div class='row'>
                         <div class='col-sm-2'>
                             " . $row["username"] . "
@@ -86,6 +91,8 @@
                 </form>";
         -
     }
+    
+    echo "</div>";
     
     echo "<div class='row'><div class='col-sm-3'>";
     
@@ -120,8 +127,10 @@
     echo "<form action='gestore.php' method='POST'>
             ISBN<input type='text' name='isbn'>
             Numero di libri<input type='number' name='number'>
-            <input type='submit' name='erease'>
+            <input type='submit' name='erase'>
             </form>";
     
     echo "</div>";
+    
+    
 ?>
