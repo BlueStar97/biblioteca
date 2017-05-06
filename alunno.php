@@ -65,8 +65,7 @@
                 <input type='hidden' name='copie' value='" . $row["copiedisp"] . "'>
                 <input type='hidden' name='nome' value='" . $row["nome"] . "'>
                 <input type='submit' name='case' value='Prenota!'>
-            </form>
-            ";
+            </form>";
             
         }
         else

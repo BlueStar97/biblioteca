@@ -43,6 +43,7 @@
     $res=$conn->query($query);
     
     //listing Users
+    echo "<button type='button' id='mostraus'>Mostra User</button>";
     echo "<div class='container' id='showus' style='display: none;'><div class='row'>
             <div class='col-sm-2'>
                 Username
@@ -89,48 +90,55 @@
                         </div>
                     </div>
                 </form>";
-        -
+    
     }
     
-    echo "</div>";
+    echo "</div><br/><br/><br/>";
+    
+    if($_POST["case"]=='Ricerca')
+    {
+        $query = "SELECT nome, ISBN, copiedisp, copietot 
+                    FROM ISBN 
+                    WHERE nome LIKE '" . $_POST["nomeLib"] . "';";
+        
+        $res=$conn->query($query);
+        
+        if($row = $res -> fetch_assoc())
+        {
+            echo "Ecco il libro che cercavi:<br/>
+            <table><tr><th>Nome</th><th>ISBN</th><th>Copie prestate</th></tr>
+            <tr><td>" . $row["nome"] . "</td><td>" . $row["ISBN"] . "</td><td>" . ($row["copietot"]-$row["copiedisp"]) . "</td></tr>
+            </table><br/><br/>";
+            //adding
+            echo "Aggiungi copie<br/>
+                    <form method='POST' action='gestore.php'>
+                        <input type='number' name='copie'>
+                        <input type='hidden' name='nome' value='" . $row["nome"] . "'>
+                        <input type='submit' name='case' value='Aggiungi'>
+                    </form><br/><br/><br/>";
+                    
+            //removing
+            if($row["copiedisp"]>0)
+            {
+                echo "Rimuovi copie(massimo: " . $row["copiedisp"] . ")<br/>
+                        <form method='POST' action='gestore.php'>
+                            <input type='number' name='copie'>
+                            <input type='hidden' name='nome' value='" . $row["nome"] . "'>
+                            <input type='hidden' name='max' value='" . $row["copiedisp"] . "'>
+                            <input type='submit' name='case' value='Rimuovi'>
+                        </form><br/><br/><br/>";
+            }
+        }
+    }
     
     echo "<div class='row'><div class='col-sm-3'>";
     
-    //Insert book
-    echo "Inserisci un libro<br/>
-            <form action='gestore.php' method='POST'>
-                ISBN<input type='text' name='isbn'><br/>
-                Nome<input type='text' name='name'><br/>
-                Copie Totali<input type='number' name='copietot'><br/>
-                <input type='submit' name='insert'><br/>
-            </form>";
+    //Searching for a book
+    echo "Effettua una ricerca<br/>
+    <form method='POST' action='gestore.php'
+        <input type='text' name='nomeLib'>
+        <input type='submit' name='case' value='Ricerca'>
+    </form><br/><br/><br/>";
     
-    echo "</div><div class='col-sm-3'>";
-    
-    //Ereasing books
-    echo "<form action='gestore.php' method='POST'>
-            Cancella un libro per ISBN<input type='text' name='isbn'><input type='submit' name='ereaseisbn'><br/>
-            </form>";
-            
-    echo "</div><div class='col-sm-3'>";
-    
-    //Adding books
-    echo "<form action='gestore.php' method='POST'>
-            ISBN<input type='text' name='isbn'>
-            Numero di libri<input type='number' name='number'>
-            <input type='submit' name='add'>
-            </form>";
-            
-    echo "</div><div class='col-sm-3'>";
-    
-    //Removing books
-    echo "<form action='gestore.php' method='POST'>
-            ISBN<input type='text' name='isbn'>
-            Numero di libri<input type='number' name='number'>
-            <input type='submit' name='erase'>
-            </form>";
-    
-    echo "</div>";
-    
-    
+    $conn->close();
 ?>
